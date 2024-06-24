@@ -102,10 +102,10 @@ export default function Home() {
   }
 
   return (
-    <div className='bg-gray-900 text-white min-h-screen px-4 py-8'>
-      <div className='max-w-7xl mx-auto'>
+    <div className='bg-gray-900 text-white font-mono min-h-screen px-4 py-8'>
+      <div className='max-w-4xl mx-auto'>
         <h1 className='text-5xl font-extrabold mb-8 text-center text-indigo-400 drop-shadow-lg'>
-          Explore AI
+          Nico AI
         </h1>
 
         <div className='mb-6 bg-gray-800 p-6 rounded-lg shadow-xl'>
