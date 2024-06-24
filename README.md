@@ -1,2 +1,1 @@
-# AiApp
-Ai App
+AiApp

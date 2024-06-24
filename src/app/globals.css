@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-900 text-white font-mono;
+}
+
+h1 {
+  @apply text-5xl font-extrabold mb-8 text-center text-indigo-400 drop-shadow-lg;
+}
+
+.card {
+  @apply bg-gray-800 rounded-lg p-6 overflow-auto min-h-[150px] shadow-lg transition-all duration-300 ease-in-out transform;
+}
+
+.card:hover {
+  @apply transform scale-105 shadow-xl;
+}
+
+button {
+  @apply bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2 px-6 rounded-md transition-transform transform hover:scale-105 shadow-lg;
+}
+
+.loader {
+  @apply border-4 border-t-4 border-t-blue-500 border-gray-700 rounded-full w-10 h-10 animate-spin mx-auto;
+}
+
+.prose {
+  @apply max-w-none text-gray-300;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
