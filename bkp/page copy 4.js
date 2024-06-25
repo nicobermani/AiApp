@@ -16,7 +16,7 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
 
 const NUM_RETRIES = 30
 const RETRY_DELAY_MS = 10000
-const MAX_ANS = 20
+const MAX_ANS = 100
 
 const client = new Groq({
   apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
@@ -32,7 +32,7 @@ export default function Home() {
   const [theme, setTheme] = useState('light')
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
-  const [numResponses, setNumResponses] = useState(6)
+  const [numResponses, setNumResponses] = useState(MAX_ANS)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
   const [queries, setQueries] = useState([])
 
