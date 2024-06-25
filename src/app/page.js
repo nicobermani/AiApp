@@ -62,7 +62,7 @@ export default function Home() {
           } catch (error) {
             console.error(
               `Error querying Groq API (attempt ${attempt + 1}):`,
-              error,
+              error
             )
             if (attempt === NUM_RETRIES) {
               setResponses((prevResponses) => {
@@ -72,12 +72,12 @@ export default function Home() {
               })
             } else {
               await new Promise((resolve) =>
-                setTimeout(resolve, RETRY_DELAY_MS),
+                setTimeout(resolve, RETRY_DELAY_MS)
               )
             }
           }
         }
-      }),
+      })
     )
 
     setLoading(false)
@@ -111,21 +111,22 @@ export default function Home() {
         theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
       }`}
     >
-      <div className='max-w-7xl mx-auto '>
-        <div className='flex items-center gap-12 justify-center'>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-16 justify-center py-8 ">
           <h1
-            className={`text-8xl font-extrabold mb-2  ${
-              theme === 'dark' ? 'text-yellow-400' : 'text-blue-600'
-            }`}
+            className={`
+      text-8xl font-extrabold mb-4 
+      `}
           >
             OuvertAI
           </h1>
 
           <button
             onClick={toggleTheme}
-            className={`py-2 px-4 rounded-lg shadow-md ${
-              theme === 'dark' ? 'bg-white text-black hover:bg-blue-300' : 'bg-black text-white'
-            }`}
+            className={`
+      py-2 px-6 rounded-full font-semibold shadow-lg transition duration-300 
+      ${theme === 'dark' ? 'bg-white text-black ' : 'bg-black text-white'}
+    `}
           >
             {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
           </button>
@@ -139,17 +140,17 @@ export default function Home() {
           <textarea
             value={aiQuery}
             onChange={(e) => setAiQuery(e.target.value)}
-            placeholder='Type your query for AI...'
+            placeholder="Type your query for AI..."
             className={`w-full px-4 py-3 rounded-md focus:outline-none focus:ring focus:ring-blue-500 resize-none shadow-inner ${
               theme === 'dark'
                 ? 'bg-gray-900 border-gray-700 text-white'
                 : 'bg-white border-gray-300 text-black'
             }`}
-            rows='4'
+            rows="4"
           />
-          <div className='flex items-center mt-4'>
+          <div className="flex items-center mt-4">
             <label
-              htmlFor='numResponses'
+              htmlFor="numResponses"
               className={`mr-2 ${
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
               }`}
@@ -157,10 +158,10 @@ export default function Home() {
               Number of Responses (max 6):
             </label>
             <input
-              type='number'
-              id='numResponses'
-              min='1'
-              max='4'
+              type="number"
+              id="numResponses"
+              min="1"
+              max="4"
               value={numResponses}
               onChange={handleNumResponsesChange}
               className={`rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-blue-500 w-20 shadow-inner ${
@@ -171,7 +172,7 @@ export default function Home() {
             />
             <button
               onClick={handleAskAi}
-              className='ml-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2 px-6 rounded-md transition-transform transform hover:scale-105 shadow-lg'
+              className="ml-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2 px-6 rounded-md transition-transform transform hover:scale-105 shadow-lg"
             >
               Ask AI
             </button>
@@ -179,9 +180,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading && (
-          <div className='col-span-full text-center py-4 text-gray-400 animate-pulse'>
+          <div className="col-span-full text-center py-4 text-gray-400 animate-pulse">
             Loading AI responses...
           </div>
         )}
@@ -197,7 +198,7 @@ export default function Home() {
                 : ''
             }`}
           >
-            <div className='flex justify-between items-center mb-2'>
+            <div className="flex justify-between items-center mb-2">
               <h2
                 className={`text-xl font-semibold drop-shadow ${
                   theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'
@@ -217,7 +218,7 @@ export default function Home() {
               </button>
             </div>
             {response ? (
-              <div className='prose max-w-none'>
+              <div className="prose max-w-none">
                 <Markdown
                   rehypePlugins={[rehypeHighlight]}
                   remarkPlugins={[remarkGfm]}
