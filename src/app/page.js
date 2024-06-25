@@ -14,24 +14,25 @@ import 'prismjs/components/prism-bash'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
 
-const GROQ_API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY
+const NUM_RETRIES = 30
+const RETRY_DELAY_MS = 10000
+const MAX_ANS = 100
+
 const client = new Groq({
-  apiKey: GROQ_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
 })
+
 const kvClient = createClient({
   url: process.env.NEXT_PUBLIC_KV_REST_API_URL,
   token: process.env.NEXT_PUBLIC_KV_REST_API_TOKEN,
 })
 
-const NUM_RETRIES = 30
-const RETRY_DELAY_MS = 10000
-
 export default function Home() {
   const [theme, setTheme] = useState('light')
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
-  const [numResponses, setNumResponses] = useState(6)
+  const [numResponses, setNumResponses] = useState(MAX_ANS)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
   const [queries, setQueries] = useState([])
 
@@ -42,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const fetchQueries = async () => {
       const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5) 
+      const sortedQueryKeys = allQueryKeys.sort().slice(-5)
       const queryValues = await Promise.all(
         sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
@@ -53,7 +54,8 @@ export default function Home() {
     }
 
     fetchQueries()
-  }, [])
+    Prism.highlightAll()
+  }, [responses])
 
   const handleAskAi = async () => {
     setResponses([])
@@ -100,11 +102,6 @@ export default function Home() {
                 newResponses[index] = 'Error: Request failed after retries'
                 return newResponses
               })
-              // Record the error in KV store
-              await kvClient.set(
-                `response:${queryId}:${index}`,
-                'Error: Request failed after retries'
-              )
             } else {
               await new Promise((resolve) =>
                 setTimeout(resolve, RETRY_DELAY_MS)
@@ -120,8 +117,8 @@ export default function Home() {
     let value = parseInt(event.target.value, 10)
     if (isNaN(value) || value < 1) {
       value = 1
-    } else if (value > 6) {
-      value = 6
+    } else if (value > MAX_ANS) {
+      value = MAX_ANS
     }
     setNumResponses(value)
   }
@@ -183,13 +180,13 @@ export default function Home() {
                 theme === 'dark' ? 'text-white' : 'text-black'
               }`}
             >
-              Number of Responses (max 6):
+              Number of Responses (max {MAX_ANS}):
             </label>
             <input
               type="number"
               id="numResponses"
               min="1"
-              max="6"
+              max={MAX_ANS}
               value={numResponses}
               onChange={handleNumResponsesChange}
               className={`rounded-md px-3 py-1  ${
