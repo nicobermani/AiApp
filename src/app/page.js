@@ -81,11 +81,10 @@ export default function Home() {
               return newResponses
             })
 
-            // Record the response in KV store
-            await kvClient.set(
-              `response:${queryId}:${index}`,
-              response.choices[0].message.content
-            )
+            // await kvClient.set(
+            //   `response:${queryId}:${index}`,
+            //   response.choices[0].message.content
+            // )
             break
           } catch (error) {
             console.error(
