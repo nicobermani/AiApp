@@ -19,8 +19,6 @@ const client = new Groq({
   apiKey: GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
 })
-console.log('KV_REST_API_URL:', process.env.NEXT_PUBLIC_KV_REST_API_URL)
-console.log('KV_REST_API_TOKEN:', process.env.NEXT_PUBLIC_KV_REST_API_TOKEN)
 const kvClient = createClient({
   url: process.env.NEXT_PUBLIC_KV_REST_API_URL,
   token: process.env.NEXT_PUBLIC_KV_REST_API_TOKEN,
@@ -42,11 +40,11 @@ export default function Home() {
   }, [responses])
 
   useEffect(() => {
-    // Fetch all queries from the KV store on component mount
     const fetchQueries = async () => {
-      const allQueries = await kvClient.keys('query:*')
+      const allQueryKeys = await kvClient.keys('query:*')
+      const sortedQueryKeys = allQueryKeys.sort().slice(-5) // Get the last 5 queries
       const queryValues = await Promise.all(
-        allQueries.map(async (key) => {
+        sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
           return value
         })
@@ -149,7 +147,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between py-4">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4">
-            OuvertAI
+            Ouvert<span className="ai-heading">AI</span>
           </h1>
 
           <button
@@ -211,9 +209,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mb-6 p-6 rounded-lg shadow-xl bg-gray-100 dark:bg-gray-800">
-          <h2 className="text-2xl font-bold mb-4">Previous Queries</h2>
-          <p className="mb-2">Total Queries: {queries.length}</p>
+        <div
+          className={`mb-6 p-6 rounded-lg shadow-xl ${
+            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+          }`}
+        >
+          <h2 className="text-2xl font-bold mb-4">Previous 5 Queries</h2>
           <ul className="list-disc pl-5">
             {queries.map((query, index) => (
               <li key={index}>{query}</li>
