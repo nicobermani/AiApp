@@ -42,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     const fetchQueries = async () => {
       const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5) // Get the last 5 queries
+      const sortedQueryKeys = allQueryKeys.sort().slice(-5) 
       const queryValues = await Promise.all(
         sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
@@ -169,7 +169,7 @@ export default function Home() {
             value={aiQuery}
             onChange={(e) => setAiQuery(e.target.value)}
             placeholder="Type your query for AI..."
-            className={`w-full px-4 py-3 rounded-md focus:outline-none focus:ring focus:ring-blue-500 resize-none shadow-inner ${
+            className={`w-full px-4 py-3 rounded-md ${
               theme === 'dark'
                 ? 'bg-gray-900 border-gray-700 text-white'
                 : 'bg-white border-gray-300 text-black'
@@ -180,7 +180,7 @@ export default function Home() {
             <label
               htmlFor="numResponses"
               className={`mr-2 ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
+                theme === 'dark' ? 'text-white' : 'text-black'
               }`}
             >
               Number of Responses (max 6):
@@ -192,7 +192,7 @@ export default function Home() {
               max="6"
               value={numResponses}
               onChange={handleNumResponsesChange}
-              className={`rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-blue-500 w-20 shadow-inner ${
+              className={`rounded-md px-3 py-1  ${
                 theme === 'dark'
                   ? 'bg-gray-900 border-gray-700 text-white'
                   : 'bg-white border-gray-300 text-black'
