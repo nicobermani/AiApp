@@ -1,11 +1,10 @@
 'use client'
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import Groq from 'groq-sdk'
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
 import Prism from 'prismjs'
-import ThemeContext from './ThemeContext'
 import 'prismjs/themes/prism-okaidia.min.css'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/components/prism-python'
@@ -23,7 +22,7 @@ const NUM_RETRIES = 30
 const RETRY_DELAY_MS = 10000
 
 export default function Home() {
-  const { theme } = useContext(ThemeContext)
+  const [theme, setTheme] = useState('light') // State for theme (default: 'light')
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(false)
@@ -35,9 +34,11 @@ export default function Home() {
   }, [responses])
 
   const handleAskAi = async () => {
+    // Function to handle AI query submission
     setLoading(true)
     setResponses([])
 
+    // Simulating AI queries
     const queries = Array.from({ length: numResponses }, (_, i) => ({
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
@@ -53,6 +54,7 @@ export default function Home() {
       queries.map(async (query, index) => {
         for (let attempt = 0; attempt <= NUM_RETRIES; attempt++) {
           try {
+            // Simulate API response
             const response = await client.chat.completions.create(query)
             setResponses((prevResponses) => {
               const newResponses = [...prevResponses]
@@ -85,6 +87,7 @@ export default function Home() {
   }
 
   const handleNumResponsesChange = (event) => {
+    // Function to handle number of responses change
     let value = parseInt(event.target.value, 10)
     if (isNaN(value) || value < 1) {
       value = 1
@@ -95,11 +98,17 @@ export default function Home() {
   }
 
   const toggleMaximize = (index) => {
+    // Function to toggle maximized response
     if (maximizedResponse === index) {
       setMaximizedResponse(null)
     } else {
       setMaximizedResponse(index)
     }
+  }
+
+  const toggleTheme = () => {
+    // Function to toggle between 'light' and 'dark' themes
+    setTheme(theme === 'light' ? 'dark' : 'light')
   }
 
   return (
@@ -164,6 +173,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Displaying AI responses */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {loading && (
             <div className='col-span-full text-center py-4 text-gray-400 animate-pulse'>
@@ -222,6 +232,17 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className='fixed bottom-4 right-4'>
+        <button
+          onClick={toggleTheme}
+          className={`bg-gray-700 text-white py-2 px-4 rounded-full shadow-md ${
+            theme === 'dark' ? 'bg-gray-700 text-white' : ''
+          }`}
+        >
+          {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+        </button>
       </div>
     </div>
   )
