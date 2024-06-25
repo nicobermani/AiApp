@@ -43,18 +43,17 @@ export default function Home() {
   useEffect(() => {
     const fetchQueries = async () => {
       const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5)
+      const sortedQueryKeys = allQueryKeys.sort().slice(-5).reverse() 
       const queryValues = await Promise.all(
         sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
           return value
         })
       )
-      setQueries(queryValues)
+      setQueries(queryValues) 
     }
 
     fetchQueries()
-    Prism.highlightAll()
   }, [responses])
 
   const handleAskAi = async () => {
@@ -71,7 +70,7 @@ export default function Home() {
       model: 'llama3-70b-8192',
     }))
 
-    const queryId = Date.now().toString() // Unique ID for each query batch
+    const queryId = Date.now().toString() 
     await kvClient.set(`query:${queryId}`, aiQuery)
 
     await Promise.all(
@@ -205,19 +204,6 @@ export default function Home() {
             </button>
           </div>
         </div>
-
-        <div
-          className={`mb-6 p-6 rounded-lg shadow-xl ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-          }`}
-        >
-          <h2 className="text-2xl font-bold mb-4">Previous 5 Queries</h2>
-          <ul className="list-disc pl-5">
-            {queries.map((query, index) => (
-              <li key={index}>{query}</li>
-            ))}
-          </ul>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -255,6 +241,19 @@ export default function Home() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div
+        className={`max-w-7xl mx-auto mb-6 p-6 rounded-lg shadow-xl ${
+          theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+        }`}
+      >
+        <h2 className="text-2xl font-bold mb-4">Last 5 Queries</h2>
+        <ul className="list-disc pl-5">
+          {queries.map((query, index) => (
+            <li key={index}>{query}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )
