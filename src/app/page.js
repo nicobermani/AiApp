@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Groq from 'groq-sdk'
+import { createClient } from '@vercel/kv'
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
@@ -18,6 +19,13 @@ const client = new Groq({
   apiKey: GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
 })
+console.log('KV_REST_API_URL:', process.env.NEXT_PUBLIC_KV_REST_API_URL)
+console.log('KV_REST_API_TOKEN:', process.env.NEXT_PUBLIC_KV_REST_API_TOKEN)
+const kvClient = createClient({
+  url: process.env.NEXT_PUBLIC_KV_REST_API_URL,
+  token: process.env.NEXT_PUBLIC_KV_REST_API_TOKEN,
+})
+
 const NUM_RETRIES = 30
 const RETRY_DELAY_MS = 10000
 
@@ -27,10 +35,27 @@ export default function Home() {
   const [responses, setResponses] = useState([])
   const [numResponses, setNumResponses] = useState(6)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
+  const [queries, setQueries] = useState([])
 
   useEffect(() => {
     Prism.highlightAll()
   }, [responses])
+
+  useEffect(() => {
+    // Fetch all queries from the KV store on component mount
+    const fetchQueries = async () => {
+      const allQueries = await kvClient.keys('query:*')
+      const queryValues = await Promise.all(
+        allQueries.map(async (key) => {
+          const value = await kvClient.get(key)
+          return value
+        })
+      )
+      setQueries(queryValues)
+    }
+
+    fetchQueries()
+  }, [])
 
   const handleAskAi = async () => {
     setResponses([])
@@ -46,6 +71,9 @@ export default function Home() {
       model: 'llama3-70b-8192',
     }))
 
+    const queryId = Date.now().toString() // Unique ID for each query batch
+    await kvClient.set(`query:${queryId}`, aiQuery)
+
     await Promise.all(
       queries.map(async (query, index) => {
         for (let attempt = 0; attempt <= NUM_RETRIES; attempt++) {
@@ -56,6 +84,12 @@ export default function Home() {
               newResponses[index] = response.choices[0].message.content
               return newResponses
             })
+
+            // Record the response in KV store
+            await kvClient.set(
+              `response:${queryId}:${index}`,
+              response.choices[0].message.content
+            )
             break
           } catch (error) {
             console.error(
@@ -68,6 +102,11 @@ export default function Home() {
                 newResponses[index] = 'Error: Request failed after retries'
                 return newResponses
               })
+              // Record the error in KV store
+              await kvClient.set(
+                `response:${queryId}:${index}`,
+                'Error: Request failed after retries'
+              )
             } else {
               await new Promise((resolve) =>
                 setTimeout(resolve, RETRY_DELAY_MS)
@@ -77,7 +116,6 @@ export default function Home() {
         }
       })
     )
-
   }
 
   const handleNumResponsesChange = (event) => {
@@ -171,6 +209,16 @@ export default function Home() {
               Ask AI
             </button>
           </div>
+        </div>
+
+        <div className="mb-6 p-6 rounded-lg shadow-xl bg-gray-100 dark:bg-gray-800">
+          <h2 className="text-2xl font-bold mb-4">Previous Queries</h2>
+          <p className="mb-2">Total Queries: {queries.length}</p>
+          <ul className="list-disc pl-5">
+            {queries.map((query, index) => (
+              <li key={index}>{query}</li>
+            ))}
+          </ul>
         </div>
       </div>
 
