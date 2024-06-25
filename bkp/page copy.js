@@ -112,16 +112,23 @@ export default function Home() {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-16 justify-center py-8">
-          <h1 className="text-8xl font-extrabold mb-4">OuvertAI</h1>
+        <div className="flex items-center gap-16 justify-center py-8 ">
+          <h1
+            className={`
+      text-8xl font-extrabold mb-4 
+      `}
+          >
+            OuvertAI
+          </h1>
 
           <button
             onClick={toggleTheme}
-            className={`py-2 px-6 rounded-full font-semibold shadow-lg transition duration-300 ${
-              theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
-            }`}
+            className={`
+      py-2 px-6 rounded-full font-semibold shadow-lg transition duration-300 
+      ${theme === 'dark' ? 'bg-white text-black ' : 'bg-black text-white'}
+    `}
           >
-            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
           </button>
         </div>
 
@@ -154,7 +161,7 @@ export default function Home() {
               type="number"
               id="numResponses"
               min="1"
-              max="6"
+              max="4"
               value={numResponses}
               onChange={handleNumResponsesChange}
               className={`rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-blue-500 w-20 shadow-inner ${
@@ -165,9 +172,7 @@ export default function Home() {
             />
             <button
               onClick={handleAskAi}
-              className={`ml-auto font-medium py-2 px-6 ${
-                theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
-              }`}
+              className="ml-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-2 px-6 rounded-md transition-transform transform hover:scale-105 shadow-lg"
             >
               Ask AI
             </button>
@@ -176,6 +181,12 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading && (
+          <div className="col-span-full text-center py-4 text-gray-400 animate-pulse">
+            Loading AI responses...
+          </div>
+        )}
+
         {responses.map((response, index) => (
           <div
             key={index}
@@ -187,27 +198,43 @@ export default function Home() {
                 : ''
             }`}
           >
-            <div className="flex justify-end items-center mb-2">
+            <div className="flex justify-between items-center mb-2">
+              <h2
+                className={`text-xl font-semibold drop-shadow ${
+                  theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'
+                }`}
+              >
+                Response {index + 1}
+              </h2>
               <button
                 onClick={() => toggleMaximize(index)}
                 className={`font-medium py-1 px-2 rounded-md transition-transform transform hover:scale-105 shadow ${
                   theme === 'dark'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
+                    ? 'bg-indigo-500 hover:bg-indigo-600 text-white'
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white'
                 }`}
               >
                 {maximizedResponse === index ? 'Minimize' : 'Maximize'}
               </button>
             </div>
-
-            <div className="prose max-w-none">
-              <Markdown
-                rehypePlugins={[rehypeHighlight]}
-                remarkPlugins={[remarkGfm]}
+            {response ? (
+              <div className="prose max-w-none">
+                <Markdown
+                  rehypePlugins={[rehypeHighlight]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {response}
+                </Markdown>
+              </div>
+            ) : (
+              <div
+                className={`text-gray-400 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                }`}
               >
-                {response}
-              </Markdown>
-            </div>
+                Waiting for response...
+              </div>
+            )}
           </div>
         ))}
       </div>
