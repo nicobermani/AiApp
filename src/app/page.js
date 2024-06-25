@@ -6,13 +6,10 @@ import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
 import Prism from 'prismjs'
-import 'prismjs/themes/prism-okaidia.min.css'
+import 'prismjs/components/prism-csharp'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/components/prism-python'
-import 'prismjs/components/prism-csharp'
-import 'prismjs/components/prism-bash'
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
-import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
+import 'prismjs/themes/prism-okaidia.min.css'
 
 const NUM_RETRIES = 30
 const RETRY_DELAY_MS = 10000
@@ -43,14 +40,14 @@ export default function Home() {
   useEffect(() => {
     const fetchQueries = async () => {
       const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5).reverse() 
+      const sortedQueryKeys = allQueryKeys.sort().slice(-5).reverse()
       const queryValues = await Promise.all(
         sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
           return value
         })
       )
-      setQueries(queryValues) 
+      setQueries(queryValues)
     }
 
     fetchQueries()
@@ -70,7 +67,7 @@ export default function Home() {
       model: 'llama3-70b-8192',
     }))
 
-    const queryId = Date.now().toString() 
+    const queryId = Date.now().toString()
     await kvClient.set(`query:${queryId}`, aiQuery)
 
     await Promise.all(
@@ -141,19 +138,14 @@ export default function Home() {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between py-4">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4">
-            Ouvert<span className="ai-heading">AI</span>
+        <div className="flex items-center justify-center py-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            Ouvert{' '}
+            <span className="ai-heading font-extrabold text-4xl md:text-5xl lg:text-6xl">
+              AI
+            </span>
           </h1>
-
-          <button
-            onClick={toggleTheme}
-            className={`py-2 px-6 rounded-full font-semibold shadow-lg transition duration-300 ${
-              theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
-            }`}
-          >
-            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-          </button>
+          
         </div>
 
         <div
@@ -172,7 +164,7 @@ export default function Home() {
             }`}
             rows="4"
           />
-          <div className="flex items-center mt-4">
+          <div className="flex items-center justify-center  mt-4">
             <label
               htmlFor="numResponses"
               className={`mr-2 ${
@@ -194,6 +186,16 @@ export default function Home() {
                   : 'bg-white border-gray-300 text-black'
               }`}
             />
+            <button
+              onClick={toggleTheme}
+              className={`py-2 ml-auto  px-6 rounded-full font-semibold shadow-lg transition duration-300 ${
+                theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
+              }`}
+            >
+              {theme === 'light'
+                ? 'Switch to Dark Mode'
+                : 'Switch to Light Mode'}
+            </button>
             <button
               onClick={handleAskAi}
               className={`ml-auto font-medium py-2 rounded-full px-6 ${
