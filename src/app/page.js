@@ -200,7 +200,7 @@ export default function Home() {
             />
             <button
               onClick={handleAskAi}
-              className={`ml-auto font-medium py-2 px-6 ${
+              className={`ml-auto font-medium py-2 rounded-full px-6 ${
                 theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
               }`}
             >
