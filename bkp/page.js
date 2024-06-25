@@ -26,7 +26,7 @@ export default function Home() {
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(false)
-  const [numResponses, setNumResponses] = useState(6)
+  const [numResponses, setNumResponses] = useState(4)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
 
   useEffect(() => {
@@ -87,8 +87,8 @@ export default function Home() {
     let value = parseInt(event.target.value, 10)
     if (isNaN(value) || value < 1) {
       value = 1
-    } else if (value > 6) {
-      value = 6
+    } else if (value > 4) {
+      value = 4
     }
     setNumResponses(value)
   }
@@ -111,20 +111,21 @@ export default function Home() {
         theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
       }`}
     >
-      <div className='max-w-7xl mx-auto '>
-        <div className='flex items-center gap-12 justify-center'>
+      <div className='max-w-7xl mx-auto items-center'>
+        <div className='flex flex-col items-center'>
           <h1
-            className={`text-8xl font-extrabold mb-2  ${
+            className={`text-4xl font-extrabold mb-2 ${
               theme === 'dark' ? 'text-yellow-400' : 'text-blue-600'
             }`}
           >
             OuvertAI
           </h1>
-
+        </div>
+        <div className='flex flex-col items-center mt-1 mb-1'>
           <button
             onClick={toggleTheme}
-            className={`py-2 px-4 rounded-lg shadow-md ${
-              theme === 'dark' ? 'bg-white text-black hover:bg-blue-300' : 'bg-black text-white'
+            className={`bg-gray-300 text-gray-800 py-2 px-4 rounded-full shadow-md ${
+              theme === 'dark' ? 'bg-gray-700 text-white' : 'hover:bg-gray-400'
             }`}
           >
             {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
@@ -154,7 +155,7 @@ export default function Home() {
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
               }`}
             >
-              Number of Responses (max 6):
+              Number of Responses (max 4):
             </label>
             <input
               type='number'
