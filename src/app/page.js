@@ -1,10 +1,11 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Groq from 'groq-sdk'
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
 import Prism from 'prismjs'
+import ThemeContext from './ThemeContext'
 import 'prismjs/themes/prism-okaidia.min.css'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/components/prism-python'
@@ -22,6 +23,7 @@ const NUM_RETRIES = 30
 const RETRY_DELAY_MS = 10000
 
 export default function Home() {
+  const { theme } = useContext(ThemeContext)
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(false)
@@ -87,7 +89,6 @@ export default function Home() {
     if (isNaN(value) || value < 1) {
       value = 1
     } else if (value > 4) {
-      // Assuming 4 is the max as per your instructions
       value = 4
     }
     setNumResponses(value)
@@ -102,22 +103,43 @@ export default function Home() {
   }
 
   return (
-    <div className='bg-gray-900 text-white min-h-screen px-4 py-8'>
+    <div
+      className={`min-h-screen px-4 py-8 ${
+        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'
+      }`}
+    >
       <div className='max-w-7xl mx-auto'>
-        <h1 className='text-5xl font-extrabold mb-8 text-center text-indigo-400 drop-shadow-lg'>
-          Explore AI
+        <h1
+          className={`text-5xl font-extrabold mb-8 text-center ${
+            theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'
+          } drop-shadow-lg`}
+        >
+          Welcome to OuvertAI
         </h1>
 
-        <div className='mb-6 bg-gray-800 p-6 rounded-lg shadow-xl'>
+        <div
+          className={`mb-6 p-6 rounded-lg shadow-xl ${
+            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+          }`}
+        >
           <textarea
             value={aiQuery}
             onChange={(e) => setAiQuery(e.target.value)}
             placeholder='Type your query for AI...'
-            className='w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-md focus:outline-none focus:ring focus:ring-blue-500 resize-none shadow-inner'
+            className={`w-full px-4 py-3 rounded-md focus:outline-none focus:ring focus:ring-blue-500 resize-none shadow-inner ${
+              theme === 'dark'
+                ? 'bg-gray-900 border-gray-700 text-white'
+                : 'bg-white border-gray-300 text-black'
+            }`}
             rows='4'
           />
           <div className='flex items-center mt-4'>
-            <label htmlFor='numResponses' className='mr-2 text-gray-400'>
+            <label
+              htmlFor='numResponses'
+              className={`mr-2 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
+              }`}
+            >
               Number of Responses (max 4):
             </label>
             <input
@@ -127,7 +149,11 @@ export default function Home() {
               max='4'
               value={numResponses}
               onChange={handleNumResponsesChange}
-              className='bg-gray-900 border border-gray-700 rounded-md px-3 py-1 text-white focus:outline-none focus:ring focus:ring-blue-500 w-20 shadow-inner'
+              className={`rounded-md px-3 py-1 focus:outline-none focus:ring focus:ring-blue-500 w-20 shadow-inner ${
+                theme === 'dark'
+                  ? 'bg-gray-900 border-gray-700 text-white'
+                  : 'bg-white border-gray-300 text-black'
+              }`}
             />
             <button
               onClick={handleAskAi}
@@ -148,25 +174,35 @@ export default function Home() {
           {responses.map((response, index) => (
             <div
               key={index}
-              className={`bg-gray-800 rounded-lg p-6 overflow-auto min-h-[150px] shadow-lg transition-all duration-300 ease-in-out transform ${
+              className={`rounded-lg p-6 overflow-auto min-h-[150px] shadow-lg transition-all duration-300 ease-in-out transform ${
+                theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+              } ${
                 maximizedResponse === index
-                  ? 'fixed inset-0 z-10 p-8 bg-gray-900 transform scale-100'
+                  ? 'fixed inset-0 z-10 p-8 transform scale-100'
                   : ''
               }`}
             >
               <div className='flex justify-between items-center mb-2'>
-                <h2 className='text-xl font-semibold text-indigo-400 drop-shadow'>
+                <h2
+                  className={`text-xl font-semibold drop-shadow ${
+                    theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'
+                  }`}
+                >
                   Response {index + 1}
                 </h2>
                 <button
                   onClick={() => toggleMaximize(index)}
-                  className='bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-1 px-2 rounded-md transition-transform transform hover:scale-105 shadow'
+                  className={`font-medium py-1 px-2 rounded-md transition-transform transform hover:scale-105 shadow ${
+                    theme === 'dark'
+                      ? 'bg-indigo-500 hover:bg-indigo-600 text-white'
+                      : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  }`}
                 >
                   {maximizedResponse === index ? 'Minimize' : 'Maximize'}
                 </button>
               </div>
               {response ? (
-                <div className='prose max-w-none text-gray-300'>
+                <div className='prose max-w-none'>
                   <Markdown
                     rehypePlugins={[rehypeHighlight]}
                     remarkPlugins={[remarkGfm]}
@@ -175,7 +211,13 @@ export default function Home() {
                   </Markdown>
                 </div>
               ) : (
-                <div className='text-gray-400'>Waiting for response...</div>
+                <div
+                  className={`text-gray-400 ${
+                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
+                  Waiting for response...
+                </div>
               )}
             </div>
           ))}

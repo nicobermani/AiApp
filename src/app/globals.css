@@ -3,5 +3,18 @@
 @tailwind utilities;
 
 body {
+  margin: 0;
   font-family: 'Roboto', sans-serif;
+}
+
+.prose {
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+textarea, input {
+  outline: none;
 }
