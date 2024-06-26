@@ -144,7 +144,6 @@ export default function Home() {
               AI
             </span>
           </h1>
-          
         </div>
 
         <div
@@ -211,7 +210,7 @@ export default function Home() {
         {responses.map((response, index) => (
           <div
             key={index}
-            className={`rounded-lg p-6 overflow-auto min-h-[150px] shadow-lg transition-all duration-300 ease-in-out transform ${
+            className={`rounded-lg p-6 overflow-auto  ${
               theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
             } ${
               maximizedResponse === index
@@ -222,7 +221,7 @@ export default function Home() {
             <div className="flex justify-end items-center mb-2">
               <button
                 onClick={() => toggleMaximize(index)}
-                className={`font-medium py-1 px-2 rounded-md transition-transform transform hover:scale-105 shadow ${
+                className={`font-medium py-1 px-2 rounded-md ${
                   theme === 'dark'
                     ? 'bg-white text-black'
                     : 'bg-black text-white'
@@ -232,7 +231,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="prose max-w-none">
+            <div >
               <Markdown
                 rehypePlugins={[rehypeHighlight]}
                 remarkPlugins={[remarkGfm]}
@@ -245,7 +244,7 @@ export default function Home() {
       </div>
 
       <div
-        className={`max-w-7xl mx-auto mb-6 p-6 rounded-lg shadow-xl ${
+        className={`max-w-7xl mx-auto mt-6 p-6 rounded-lg shadow-xl ${
           theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
         }`}
       >
