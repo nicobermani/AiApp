@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.ai-heading {
-  background: linear-gradient(90deg, #ff4b1f, #ff9068, #1fddff, #1fffc9, #ff4b1f);
+.ai-heading-css {
+  @apply font-extrabold sm:text-3xl md:text-5xl lg:text-6xl;
+  background: linear-gradient(
+    90deg,
+    #ff4b1f,
+    #ff9068,
+    #1fddff,
+    #1fffc9,
+    #ff4b1f
+  );
   background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -21,4 +29,12 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.button-css {
+  @apply py-2 px-4 sm:mx-4 md:mx-6 lg:mx-8 font-medium rounded-full cursor-pointer;
+}
+
+.div1-css {
+  @apply flex flex-wrap justify-evenly items-center gap-y-2 gap-x-2;
 }
