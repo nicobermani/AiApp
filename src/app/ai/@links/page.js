@@ -2,12 +2,8 @@
 import React, { useState, useEffect } from 'react'
 
 const aiLinks = [
-  'https://chatgpt.com',
-  'https://gemini.google.com',
-  'https://sdk.vercel.ai',
-  'https://you.com',
-  'https://www.perplexity.ai',
-  'https://github.com/steven2358/awesome-generative-ai',
+  'https://code.benco.io/icon-collection/azure-icons/',
+  
 ]
 
 const AiPlaygroundLinks = () => {
@@ -31,7 +27,7 @@ const AiPlaygroundLinks = () => {
 
   return (
     <div className="p-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-      <h2 className="text-2xl font-bold text-center mb-4">AI Playgrounds</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Links</h2>
       <ul className="divide-y divide-gray-200">
         {linksData.map((link, index) => (
           <li key={index} className="flex items-center p-4">

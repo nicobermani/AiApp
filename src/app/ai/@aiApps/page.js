@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 
 const aiLinks = [
   'https://chatgpt.com',
+  'https://copilot.microsoft.com',
   'https://gemini.google.com',
   'https://sdk.vercel.ai',
   'https://you.com',
@@ -31,7 +32,7 @@ const AiPlaygroundLinks = () => {
 
   return (
     <div className="p-4 max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-      <h2 className="text-2xl font-bold text-center mb-4">AI Playgrounds</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">AI Apps</h2>
       <ul className="divide-y divide-gray-200">
         {linksData.map((link, index) => (
           <li key={index} className="flex items-center p-4">
