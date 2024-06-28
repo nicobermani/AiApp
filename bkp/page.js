@@ -139,17 +139,15 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-center py-4">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Ouvert{' '}
-            <span className="ai-heading font-extrabold text-4xl md:text-5xl lg:text-6xl">
-              AI
-            </span>
+            Ouvert
+            <span className="ai-heading-css">AI</span>
           </h1>
         </div>
 
         <div
           className={`mb-6 p-6 rounded-lg shadow-xl ${
             theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-          }`}
+          } `}
         >
           <textarea
             value={aiQuery}
@@ -160,33 +158,33 @@ export default function Home() {
                 ? 'bg-gray-900 border-gray-700 text-white'
                 : 'bg-white border-gray-300 text-black'
             }`}
-            rows="4"
+            rows="5"
           />
-          <div className="flex items-center justify-center  mt-4">
-            <label
-              htmlFor="numResponses"
-              className={`mr-2 ${
-                theme === 'dark' ? 'text-white' : 'text-black'
-              }`}
-            >
-              Number of Responses (max {MAX_ANS}):
-            </label>
-            <input
-              type="number"
-              id="numResponses"
-              min="1"
-              max={MAX_ANS}
-              value={numResponses}
-              onChange={handleNumResponsesChange}
-              className={`rounded-md px-3 py-1  ${
-                theme === 'dark'
-                  ? 'bg-gray-900 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-black'
-              }`}
-            />
+          <div className="div1-css mt-4">
+            <div className="div1-css">
+              <label
+                htmlFor="numResponses"
+                className={` ${theme === 'dark' ? 'text-white' : 'text-black'}`}
+              >
+                Number of Responses (max {MAX_ANS})
+              </label>
+              <input
+                type="number"
+                id="numResponses"
+                min="1"
+                max={MAX_ANS}
+                value={numResponses}
+                onChange={handleNumResponsesChange}
+                className={`rounded-md p-3 ${
+                  theme === 'dark'
+                    ? 'bg-gray-900 border-gray-700 text-white'
+                    : 'bg-white border-gray-300 text-black'
+                }`}
+              />
+            </div>
             <button
               onClick={toggleTheme}
-              className={`py-2 ml-auto  px-6 rounded-full font-semibold shadow-lg transition duration-300 ${
+              className={`button-css  ${
                 theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
               }`}
             >
@@ -196,7 +194,7 @@ export default function Home() {
             </button>
             <button
               onClick={handleAskAi}
-              className={`ml-auto font-medium py-2 rounded-full px-6 ${
+              className={`button-css  ${
                 theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
               }`}
             >
@@ -221,7 +219,7 @@ export default function Home() {
             <div className="flex justify-end items-center mb-2">
               <button
                 onClick={() => toggleMaximize(index)}
-                className={`font-medium py-1 px-2 rounded-md ${
+                className={`button-css ${
                   theme === 'dark'
                     ? 'bg-white text-black'
                     : 'bg-black text-white'
@@ -231,7 +229,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div >
+            <div>
               <Markdown
                 rehypePlugins={[rehypeHighlight]}
                 remarkPlugins={[remarkGfm]}

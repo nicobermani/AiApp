@@ -37,21 +37,7 @@ export default function Home() {
     Prism.highlightAll()
   }, [responses])
 
-  useEffect(() => {
-    const fetchQueries = async () => {
-      const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5).reverse()
-      const queryValues = await Promise.all(
-        sortedQueryKeys.map(async (key) => {
-          const value = await kvClient.get(key)
-          return value
-        })
-      )
-      setQueries(queryValues)
-    }
-
-    fetchQueries()
-  }, [responses])
+  
 
   const handleAskAi = async () => {
     setResponses([])
@@ -81,10 +67,7 @@ export default function Home() {
               return newResponses
             })
 
-            // await kvClient.set(
-            //   `response:${queryId}:${index}`,
-            //   response.choices[0].message.content
-            // )
+            
             break
           } catch (error) {
             console.error(
@@ -241,18 +224,7 @@ export default function Home() {
         ))}
       </div>
 
-      <div
-        className={`max-w-7xl mx-auto mt-6 p-6 rounded-lg shadow-xl ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-        }`}
-      >
-        <h2 className="text-2xl font-bold mb-4">Last 5 Queries</h2>
-        <ul className="list-disc pl-5">
-          {queries.map((query, index) => (
-            <li key={index}>{query}</li>
-          ))}
-        </ul>
-      </div>
+      
     </div>
   )
 }
