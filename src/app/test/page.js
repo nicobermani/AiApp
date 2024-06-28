@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import Groq from 'groq-sdk'
 import { createClient } from '@vercel/kv'
@@ -32,6 +33,7 @@ export default function Home() {
   const [numResponses, setNumResponses] = useState(6)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
   const [queries, setQueries] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     Prism.highlightAll()
@@ -39,6 +41,7 @@ export default function Home() {
 
   const handleAskAi = async () => {
     setResponses([])
+    setLoading(true)
 
     const queries = Array.from({ length: numResponses }, (_, i) => ({
       messages: [
@@ -86,6 +89,8 @@ export default function Home() {
         }
       })
     )
+
+    setLoading(false)
   }
 
   const handleNumResponsesChange = (event) => {
@@ -193,43 +198,59 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {responses.map((response, index) => (
-          <div
-            key={index}
-            className={`rounded-lg p-6 overflow-auto  ${
-              theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-            } ${
-              maximizedResponse === index
-                ? 'fixed inset-0 z-10 p-8 transform scale-100'
-                : ''
-            }`}
-          >
-            <div className="flex justify-end items-center mb-2">
-              <button
-                onClick={() => toggleMaximize(index)}
-                className={`button-css ${
-                  theme === 'dark'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
-                }`}
-              >
-                {maximizedResponse === index ? 'Minimize' : 'Maximize'}
-              </button>
-            </div>
-
-            <div>
-              <Markdown
-                rehypePlugins={[rehypeHighlight]}
-                remarkPlugins={[remarkGfm]}
-              >
-                {response}
-              </Markdown>
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <div className="text-center">
+              <Image
+                src="/img/aiLoad1.gif"
+                width={64}
+                height={64}
+                className="w-32 h-32 mx-auto rounded-full"
+              />
+              <p className="mt-2 text-lg font-semibold">
+                Loading AI response using Groq - Fast AI Inference
+              </p>
             </div>
           </div>
-        ))}
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {responses.map((response, index) => (
+            <div
+              key={index}
+              className={`rounded-lg p-6 overflow-auto  ${
+                theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+              } ${
+                maximizedResponse === index
+                  ? 'fixed inset-0 z-10 p-8 transform scale-100'
+                  : ''
+              }`}
+            >
+              <div className="flex justify-end items-center mb-2">
+                <button
+                  onClick={() => toggleMaximize(index)}
+                  className={`button-css ${
+                    theme === 'dark'
+                      ? 'bg-white text-black'
+                      : 'bg-black text-white'
+                  }`}
+                >
+                  {maximizedResponse === index ? 'Minimize' : 'Maximize'}
+                </button>
+              </div>
+
+              <div>
+                <Markdown
+                  rehypePlugins={[rehypeHighlight]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {response}
+                </Markdown>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
