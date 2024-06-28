@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import Groq from 'groq-sdk'
 import { createClient } from '@vercel/kv'
@@ -26,12 +27,13 @@ const kvClient = createClient({
 })
 
 export default function Home() {
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState('dark')
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
   const [numResponses, setNumResponses] = useState(6)
   const [maximizedResponse, setMaximizedResponse] = useState(null)
   const [queries, setQueries] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     Prism.highlightAll()
@@ -39,6 +41,7 @@ export default function Home() {
 
   const handleAskAi = async () => {
     setResponses([])
+    setLoading(true)
 
     const queries = Array.from({ length: numResponses }, (_, i) => ({
       messages: [
@@ -86,6 +89,8 @@ export default function Home() {
         }
       })
     )
+
+    setLoading(false)
   }
 
   const handleNumResponsesChange = (event) => {
@@ -121,6 +126,17 @@ export default function Home() {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             Ouvert
             <span className="ai-heading-css">AI</span>
+            <span className="text-sm font-normal  ml-2">
+              Developed by{' '}
+              <a
+                href="https://www.linkedin.com/in/nicobermani"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-blue-600"
+              >
+                Nicober Mani
+              </a>
+            </span>
           </h1>
         </div>
 
@@ -174,7 +190,7 @@ export default function Home() {
             </button>
             <button
               onClick={handleAskAi}
-              className={`button-css  ${
+              className={`askai-button-css  ${
                 theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
               }`}
             >
@@ -182,44 +198,87 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {responses.map((response, index) => (
-          <div
-            key={index}
-            className={`rounded-lg p-6 overflow-auto  ${
-              theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-            } ${
-              maximizedResponse === index
-                ? 'fixed inset-0 z-10 p-8 transform scale-100'
-                : ''
-            }`}
-          >
-            <div className="flex justify-end items-center mb-2">
-              <button
-                onClick={() => toggleMaximize(index)}
-                className={`button-css ${
-                  theme === 'dark'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
-                }`}
-              >
-                {maximizedResponse === index ? 'Minimize' : 'Maximize'}
-              </button>
-            </div>
-
-            <div>
-              <Markdown
-                rehypePlugins={[rehypeHighlight]}
-                remarkPlugins={[remarkGfm]}
-              >
-                {response}
-              </Markdown>
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <div className="text-center">
+              <Image
+                src="/img/aiLoad1.gif"
+                width={64}
+                height={64}
+                className="w-32 h-32 mx-auto rounded-full"
+              />
+              <p className="mt-2 text-lg font-semibold">
+                Loading AI response using Groq - Fast AI Inference
+              </p>
             </div>
           </div>
-        ))}
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {responses.map((response, index) => (
+            <div
+              key={index}
+              className={`rounded-lg p-6 overflow-auto  ${
+                theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+              } ${
+                maximizedResponse === index
+                  ? 'fixed inset-0 z-10 p-8 transform scale-100'
+                  : ''
+              }`}
+            >
+              <div className="flex justify-end items-center mb-2">
+                <button
+                  onClick={() => toggleMaximize(index)}
+                  className={`button-css ${
+                    theme === 'dark'
+                      ? 'bg-white text-black'
+                      : 'bg-black text-white'
+                  }`}
+                >
+                  {maximizedResponse === index ? 'Minimize' : 'Maximize'}
+                </button>
+              </div>
+
+              <div>
+                <Markdown
+                  rehypePlugins={[rehypeHighlight]}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {response}
+                </Markdown>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+      <footer
+        className={`fixed left-0 right-0 bottom-0 py-4 text-center z-50 ${
+          theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'
+        }`}
+      >
+        <p className="mb-2">
+          Special thanks to{' '}
+          <a
+            href="https://vercel.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600"
+          >
+            Vercel
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://groq.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600"
+          >
+            Groq
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   )
 }

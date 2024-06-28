@@ -27,7 +27,7 @@ const kvClient = createClient({
 })
 
 export default function Home() {
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState('dark')
   const [aiQuery, setAiQuery] = useState('')
   const [responses, setResponses] = useState([])
   const [numResponses, setNumResponses] = useState(6)
@@ -252,6 +252,33 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <footer
+        className={`fixed left-0 right-0 bottom-0 py-4 text-center z-50 ${
+          theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'
+        }`}
+      >
+        <p className="mb-2">
+          Special thanks to{' '}
+          <a
+            href="https://vercel.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600"
+          >
+            Vercel
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://groq.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600"
+          >
+            Groq
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   )
 }
