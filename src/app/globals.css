@@ -35,6 +35,10 @@
   @apply py-2 px-4 sm:mx-4 md:mx-6 lg:mx-8 font-medium rounded-full cursor-pointer;
 }
 
+.askai-button-css {
+  @apply py-2 px-4 sm:mx-4 md:mx-6 lg:mx-8 font-medium rounded-full cursor-pointer border-4 border-cyan-500 transition duration-300 ease-in-out;
+}
+
 .div1-css {
   @apply flex flex-wrap justify-evenly items-center gap-y-2 gap-x-2;
 }

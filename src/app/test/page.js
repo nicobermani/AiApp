@@ -37,8 +37,6 @@ export default function Home() {
     Prism.highlightAll()
   }, [responses])
 
-  
-
   const handleAskAi = async () => {
     setResponses([])
 
@@ -67,7 +65,6 @@ export default function Home() {
               return newResponses
             })
 
-            
             break
           } catch (error) {
             console.error(
@@ -124,6 +121,17 @@ export default function Home() {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             Ouvert
             <span className="ai-heading-css">AI</span>
+            <span className="text-sm font-normal  ml-2">
+              Developed by{' '}
+              <a
+                href="https://www.linkedin.com/in/nicobermani"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-blue-600"
+              >
+                Nicober Mani
+              </a>
+            </span>
           </h1>
         </div>
 
@@ -177,7 +185,7 @@ export default function Home() {
             </button>
             <button
               onClick={handleAskAi}
-              className={`button-css  ${
+              className={`askai-button-css  ${
                 theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
               }`}
             >
@@ -223,8 +231,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      
     </div>
   )
 }
