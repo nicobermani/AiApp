@@ -8,13 +8,13 @@ const kvClient = createClient({
 })
 
 export default function Home() {
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState('dark')
   const [queries, setQueries] = useState([])
 
   useEffect(() => {
     const fetchQueries = async () => {
       const allQueryKeys = await kvClient.keys('query:*')
-      const sortedQueryKeys = allQueryKeys.sort().slice(-5).reverse()
+      const sortedQueryKeys = allQueryKeys.sort().slice(-50).reverse()
       const queryValues = await Promise.all(
         sortedQueryKeys.map(async (key) => {
           const value = await kvClient.get(key)
