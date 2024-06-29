@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 
 const aiLinks = [
   'https://code.benco.io/icon-collection/azure-icons/',
-  
+  'https://sdk.vercel.ai/docs/ai-sdk-rsc/overview',
 ]
 
 const AiPlaygroundLinks = () => {

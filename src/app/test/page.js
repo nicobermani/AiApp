@@ -162,7 +162,7 @@ export default function Home() {
                 htmlFor="numResponses"
                 className={` ${theme === 'dark' ? 'text-white' : 'text-black'}`}
               >
-                Number of Responses (max {MAX_ANS})
+                AI Responses (max {MAX_ANS})
               </label>
               <input
                 type="number"
