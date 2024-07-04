@@ -38,13 +38,6 @@ export default function Home() {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center py-4">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Ouvert
-            <span className="ai-heading-css">AI</span>
-          </h1>
-        </div>
-
         <button
           onClick={toggleTheme}
           className={`button-css  ${
@@ -59,7 +52,6 @@ export default function Home() {
             theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
           }`}
         >
-          <h2 className="text-2xl font-bold mb-4">Last 5 Queries</h2>
           <ul className="list-disc pl-5">
             {queries.map((query, index) => (
               <li key={index}>{query}</li>
