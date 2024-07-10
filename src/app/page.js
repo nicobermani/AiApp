@@ -34,6 +34,7 @@ export default function Home() {
   const [maximizedResponse, setMaximizedResponse] = useState(null)
   const [queries, setQueries] = useState([])
   const [loading, setLoading] = useState(false)
+  const [selectedModel, setSelectedModel] = useState('llama3-70b-8192')
 
   useEffect(() => {
     Prism.highlightAll()
@@ -51,7 +52,7 @@ export default function Home() {
           content: `${aiQuery}`,
         },
       ],
-      model: 'llama3-70b-8192',
+      model: selectedModel,
     }))
 
     const queryId = Date.now().toString()
@@ -113,6 +114,46 @@ export default function Home() {
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light')
+  }
+
+  const models = [
+    {
+      name: 'llama3-70b-8192',
+    },
+    {
+      name: 'mixtral-8x7b-32768',
+    },
+    {
+      name: 'gemma2-9b-it',
+    },
+    {
+      name: 'gemma-7b-it',
+    },
+    {
+      name: 'llama3-8b-8192',
+    },
+  ]
+
+  const ModelDropdown = ({ models, selectedModel, onSelectModel }) => {
+    return (
+      <div className="relative">
+        <select
+          value={selectedModel}
+          onChange={(e) => onSelectModel(e.target.value)}
+          className={`rounded-md p-3 ${
+            theme === 'dark'
+              ? 'bg-gray-900 border-gray-700 text-white'
+              : 'bg-white border-gray-300 text-black'
+          }`}
+        >
+          {models.map((model) => (
+            <option key={model.name} value={model.name}>
+              {model.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    )
   }
 
   return (
@@ -178,6 +219,11 @@ export default function Home() {
                 }`}
               />
             </div>
+            <ModelDropdown
+              models={models}
+              selectedModel={selectedModel}
+              onSelectModel={(model) => setSelectedModel(model)}
+            />
             <button
               onClick={toggleTheme}
               className={`button-css  ${
