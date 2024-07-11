@@ -137,7 +137,14 @@ export default function Home() {
   const ModelDropdown = ({ models, selectedModel, onSelectModel }) => {
     return (
       <div className="relative">
+        <label
+          htmlFor="selectModel"
+          className={` ${theme === 'dark' ? 'text-white' : 'text-black'}`}
+        >
+          AI Model {}
+        </label>
         <select
+          id="selectModel"
           value={selectedModel}
           onChange={(e) => onSelectModel(e.target.value)}
           className={`rounded-md p-3 ${
