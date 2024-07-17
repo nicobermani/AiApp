@@ -39,6 +39,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [selectedModel, setSelectedModel] = useState('llama3-70b-8192')
   const [sidebarWidth, setSidebarWidth] = useState(300)
+  const [checkedFiles, setCheckedFiles] = useState(new Set())
   const sliderRef = useRef(null)
 
   useEffect(() => {
@@ -75,7 +76,9 @@ export default function Home() {
   }, [])
 
   const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files).filter(shouldBeDisplayed))
+    const newFiles = Array.from(e.target.files).filter(shouldBeDisplayed)
+    setFiles(newFiles)
+    setCheckedFiles(new Set())
   }
 
   const shouldBeDisplayed = (file) => {
@@ -90,8 +93,30 @@ export default function Home() {
       path.includes('/.vs/') ||
       path.includes('node_modules') ||
       path.includes('lock.json') ||
+      path.includes('.next') ||
       path.includes('/debug/')
     )
+  }
+
+  const toggleFile = (path) => {
+    setCheckedFiles((prevCheckedFiles) => {
+      const newCheckedFiles = new Set(prevCheckedFiles)
+      if (newCheckedFiles.has(path)) {
+        newCheckedFiles.delete(path)
+      } else {
+        newCheckedFiles.add(path)
+      }
+      return newCheckedFiles
+    })
+  }
+
+  const checkAllFiles = () => {
+    const allFilePaths = files.map((file) => file.webkitRelativePath)
+    setCheckedFiles(new Set(allFilePaths))
+  }
+
+  const uncheckAllFiles = () => {
+    setCheckedFiles(new Set())
   }
 
   const renderFileTree = (tree) => {
@@ -104,7 +129,8 @@ export default function Home() {
             <input
               type="checkbox"
               className="file-checkbox mr-2"
-              value={node.path}
+              checked={checkedFiles.has(node.path)}
+              onChange={() => toggleFile(node.path)}
               id={node.path}
             />
             <label htmlFor={node.path}>{key}</label>
@@ -150,11 +176,8 @@ export default function Home() {
     setLoading(true)
 
     const aiquery = aiQuery.trim()
-    var selectedFiles = Array.from(
-      document.querySelectorAll('.file-checkbox:checked')
-    )
 
-    if (selectedFiles.length === 0 && aiquery) {
+    if (checkedFiles.size === 0 && aiquery) {
       await sendToAPI(aiquery)
       return
     }
@@ -162,69 +185,63 @@ export default function Home() {
     var fileContents = ''
     var filesRead = 0
 
-    selectedFiles.forEach((checkbox) => {
-      const filePath = checkbox.value
-      files.forEach((file) => {
-        if (file.webkitRelativePath === filePath) {
-          const reader = new FileReader()
-          reader.onload = (event) => {
-            const content = event.target.result
-            fileContents += `${file.webkitRelativePath}\n${content}\n\n`
+    files.forEach((file) => {
+      if (checkedFiles.has(file.webkitRelativePath)) {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          const content = event.target.result
+          fileContents += `${file.webkitRelativePath}\n${content}\n\n`
 
-            filesRead++
-            if (filesRead === selectedFiles.length) {
-              const combinedQuery = `Code developed so far:\n\n${fileContents}\n\n${aiquery}`
+          filesRead++
+          if (filesRead === checkedFiles.size) {
+            const combinedQuery = `Code developed so far:\n\n${fileContents}\n\n${aiquery}`
 
-              const queries = Array.from({ length: numResponses }, (_, i) => ({
-                messages: [
-                  { role: 'system', content: 'You are a helpful assistant.' },
-                  { role: 'user', content: `${combinedQuery}` },
-                ],
-                model: selectedModel,
-              }))
+            const queries = Array.from({ length: numResponses }, (_, i) => ({
+              messages: [
+                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'user', content: `${combinedQuery}` },
+              ],
+              model: selectedModel,
+            }))
 
-              Promise.all(
-                queries.map(async (query, index) => {
-                  for (let attempt = 0; attempt <= NUM_RETRIES; attempt++) {
-                    try {
-                      const response = await client.chat.completions.create(
-                        query
-                      )
+            Promise.all(
+              queries.map(async (query, index) => {
+                for (let attempt = 0; attempt <= NUM_RETRIES; attempt++) {
+                  try {
+                    const response = await client.chat.completions.create(query)
+                    setResponses((prevResponses) => {
+                      const newResponses = [...prevResponses]
+                      newResponses[index] = response.choices[0].message.content
+                      return newResponses
+                    })
+                    break
+                  } catch (error) {
+                    console.error(
+                      `Error querying Groq API (attempt ${attempt + 1}):`,
+                      error
+                    )
+                    if (attempt === NUM_RETRIES) {
                       setResponses((prevResponses) => {
                         const newResponses = [...prevResponses]
                         newResponses[index] =
-                          response.choices[0].message.content
+                          'Error: Request failed after retries'
                         return newResponses
                       })
-                      break
-                    } catch (error) {
-                      console.error(
-                        `Error querying Groq API (attempt ${attempt + 1}):`,
-                        error
+                    } else {
+                      await new Promise((resolve) =>
+                        setTimeout(resolve, RETRY_DELAY_MS)
                       )
-                      if (attempt === NUM_RETRIES) {
-                        setResponses((prevResponses) => {
-                          const newResponses = [...prevResponses]
-                          newResponses[index] =
-                            'Error: Request failed after retries'
-                          return newResponses
-                        })
-                      } else {
-                        await new Promise((resolve) =>
-                          setTimeout(resolve, RETRY_DELAY_MS)
-                        )
-                      }
                     }
                   }
-                })
-              )
+                }
+              })
+            )
 
-              setLoading(false)
-            }
+            setLoading(false)
           }
-          reader.readAsText(file)
         }
-      })
+        reader.readAsText(file)
+      }
     })
   }
 
@@ -326,10 +343,16 @@ export default function Home() {
           onChange={handleFileChange}
         />
         <div className="flex space-x-2 mb-4">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button
+            onClick={checkAllFiles}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
             Check All
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button
+            onClick={uncheckAllFiles}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
             Uncheck All
           </button>
         </div>
