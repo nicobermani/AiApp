@@ -313,24 +313,22 @@ export default function Home() {
     )
   }
 
-  return (
-    <div
-      className={`flex h-screen ${
-        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'
-      }`}
-    >
+    return (
+    <div className={`flex h-screen ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900'}`}>
+      {/* Sidebar */}
       <aside
         style={{ width: `${sidebarWidth}px` }}
-        className={`h-screen overflow-y-auto p-4 ${
-          theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-        }`}
+        className={`h-screen overflow-y-auto p-6 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} shadow-lg`}
       >
-        <h3 className="font-bold text-lg mb-4">File Tree</h3>
+        <h3 className="font-bold text-xl mb-6">File Tree</h3>
+        <label htmlFor="folderInput" className="block mb-2 font-medium">
+          Select Folder
+        </label>
         <input
-          className={`w-full p-2 mb-4 border rounded ${
+          className={`w-full p-2 mb-4 border rounded transition-colors ${
             theme === 'dark'
-              ? 'bg-gray-700 border-gray-600 text-white'
-              : 'bg-gray-100 border-gray-300 text-black'
+              ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+              : 'bg-white border-gray-300 text-black hover:bg-gray-50'
           }`}
           type="file"
           id="folderInput"
@@ -342,16 +340,16 @@ export default function Home() {
           multiple
           onChange={handleFileChange}
         />
-        <div className="flex space-x-2 mb-4">
+        <div className="flex space-x-2 mb-6">
           <button
             onClick={checkAllFiles}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Check All
           </button>
           <button
             onClick={uncheckAllFiles}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           >
             Uncheck All
           </button>
@@ -361,25 +359,23 @@ export default function Home() {
         </div>
       </aside>
 
+      {/* Resizer */}
       <div
         ref={sliderRef}
-        className="w-1 cursor-col-resize bg-gray-300 hover:bg-gray-400"
+        className="w-1 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors"
       ></div>
 
+      {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
-        <div
-          className={`mb-8 p-6 rounded-lg shadow-xl ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-          }`}
-        >
+        <div className={`mb-8 p-6 rounded-lg shadow-xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
           <textarea
             value={aiQuery}
             onChange={(e) => setAiQuery(e.target.value)}
             placeholder="Type your query for AI..."
-            className={`w-full px-4 py-3 rounded-md mb-4 ${
+            className={`w-full px-4 py-3 rounded-md mb-4 transition-colors ${
               theme === 'dark'
-                ? 'bg-gray-700 border-gray-600 text-white'
-                : 'bg-gray-100 border-gray-300 text-black'
+                ? 'bg-gray-700 border-gray-600 text-white focus:ring-2 focus:ring-blue-500'
+                : 'bg-gray-100 border-gray-300 text-black focus:ring-2 focus:ring-blue-500'
             }`}
             rows="5"
           />
@@ -387,9 +383,7 @@ export default function Home() {
             <div>
               <label
                 htmlFor="numResponses"
-                className={`block mb-2 ${
-                  theme === 'dark' ? 'text-white' : 'text-black'
-                }`}
+                className={`block mb-2 font-medium ${theme === 'dark' ? 'text-white' : 'text-black'}`}
               >
                 AI Responses (max {MAX_ANS})
               </label>
@@ -400,10 +394,10 @@ export default function Home() {
                 max={MAX_ANS}
                 value={numResponses}
                 onChange={handleNumResponsesChange}
-                className={`w-full rounded-md p-3 ${
+                className={`w-full rounded-md p-3 transition-colors ${
                   theme === 'dark'
-                    ? 'bg-gray-700 border-gray-600 text-white'
-                    : 'bg-gray-100 border-gray-300 text-black'
+                    ? 'bg-gray-700 border-gray-600 text-white focus:ring-2 focus:ring-blue-500'
+                    : 'bg-gray-100 border-gray-300 text-black focus:ring-2 focus:ring-blue-500'
                 }`}
               />
             </div>
@@ -411,25 +405,24 @@ export default function Home() {
               models={models}
               selectedModel={selectedModel}
               onSelectModel={(model) => setSelectedModel(model)}
+              theme={theme}
             />
             <button
               onClick={toggleTheme}
-              className={`w-full p-3 rounded-md ${
+              className={`w-full p-3 rounded-md transition-colors ${
                 theme === 'dark'
-                  ? 'bg-white text-black hover:bg-gray-200'
-                  : 'bg-gray-800 text-white hover:bg-gray-700'
+                  ? 'bg-yellow-500 text-black hover:bg-yellow-600'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700'
               }`}
             >
-              {theme === 'light'
-                ? 'Switch to Dark Mode'
-                : 'Switch to Light Mode'}
+              {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
             </button>
             <button
               onClick={handleAskAi}
-              className={`w-full p-3 rounded-md ${
+              className={`w-full p-3 rounded-md transition-colors ${
                 theme === 'dark'
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'bg-blue-500 text-white hover:bg-blue-600'
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
             >
               Ask AI
@@ -438,7 +431,7 @@ export default function Home() {
         </div>
 
         {loading && (
-          <div className="flex items-center justify-center py-4">
+          <div className="flex items-center justify-center py-8">
             <div className="text-center">
               <Image
                 src="/img/aiLoad1.gif"
@@ -447,7 +440,7 @@ export default function Home() {
                 className="w-32 h-32 mx-auto rounded-full"
                 alt="Loading"
               />
-              <p className="mt-2 text-lg font-semibold">
+              <p className="mt-4 text-lg font-semibold animate-pulse">
                 Loading AI response using Groq - Fast AI Inference
               </p>
             </div>
@@ -458,21 +451,21 @@ export default function Home() {
           {responses.map((response, index) => (
             <div
               key={index}
-              className={`rounded-lg p-6 overflow-auto ${
+              className={`rounded-lg p-6 overflow-auto transition-all duration-300 ${
                 theme === 'dark' ? 'bg-gray-800' : 'bg-white'
               } ${
                 maximizedResponse === index
                   ? 'fixed inset-0 z-10 p-8 transform scale-100'
-                  : ''
+                  : 'hover:shadow-lg'
               }`}
             >
-              <div className="flex justify-end items-center mb-2">
+              <div className="flex justify-end items-center mb-4">
                 <button
                   onClick={() => toggleMaximize(index)}
-                  className={`px-4 py-2 rounded ${
+                  className={`px-4 py-2 rounded transition-colors ${
                     theme === 'dark'
-                      ? 'bg-white text-black hover:bg-gray-200'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
                   }`}
                 >
                   {maximizedResponse === index ? 'Minimize' : 'Maximize'}
