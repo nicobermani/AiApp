@@ -196,6 +196,14 @@ export default function Home() {
           if (filesRead === checkedFiles.size) {
             const combinedQuery = `Code developed so far:\n\n${fileContents}\n\n${aiquery}`
 
+            navigator.clipboard
+              .writeText(combinedQuery)
+              .then(() => {
+                console.log('Combined query copied to clipboard!')
+              })
+              .catch((err) => {
+                console.error('Failed to copy to clipboard: ', err)
+              })
             const queries = Array.from({ length: numResponses }, (_, i) => ({
               messages: [
                 { role: 'system', content: 'You are a helpful assistant.' },
