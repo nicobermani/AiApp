@@ -121,16 +121,31 @@ export default function Home() {
       name: 'llama3-70b-8192',
     },
     {
+      name: 'llama3-8b-8192',
+    },
+    {
       name: 'mixtral-8x7b-32768',
+    },
+    {
+      name: 'llama-3.1-405b-reasoning',
+    },
+    {
+      name: 'llama-3.1-70b-versatile',
+    },
+    {
+      name: 'llama-3.1-8b-instant',
+    },
+    {
+      name: 'llama3-groq-70b-8192-tool-use-preview',
+    },
+    {
+      name: 'llama3-groq-8b-8192-tool-use-preview',
     },
     {
       name: 'gemma2-9b-it',
     },
     {
       name: 'gemma-7b-it',
-    },
-    {
-      name: 'llama3-8b-8192',
     },
   ]
 

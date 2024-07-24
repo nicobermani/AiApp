@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-const notes = ['^\\s*$\\n - Replace blank lines in Visual Studio', '^\\s*$\\n']
+const notes = ['^\\s*$\\n', 'python -m venv venv', 'venvScriptsactivate']
 
 const AiPlaygroundLinks = () => {
   return (
